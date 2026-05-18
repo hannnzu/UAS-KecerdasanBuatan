@@ -1,0 +1,3 @@
+kondisi_pct,harga_pasar_ribu,kelengkapan_pct,expected_harga_jual_ribu,keterangan
+90,4500,100,4240,Kasus 1 dari jurnal (MATLAB)
+50,2500,95,1140,Kasus 2 dari jurnal (MATLAB)

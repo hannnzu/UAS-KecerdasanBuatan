@@ -1,0 +1,10 @@
+# GUI Framework
+PyQt6==6.6.1
+
+# Numerical & Scientific
+numpy>=1.26.0
+pandas>=2.1.0
+
+# Fuzzy Logic implementation support
+scikit-fuzzy>=0.4.2
+matplotlib>=3.8.0

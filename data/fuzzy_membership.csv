@@ -1,0 +1,13 @@
+variabel,set_name,tipe,p1,p2,p3
+kondisi,KURANG,shoulder_kiri,0,60,
+kondisi,CUKUP,triangular,50,65,80
+kondisi,BAGUS,shoulder_kanan,70,100,
+harga_pasar,RENDAH,shoulder_kiri,0,2750,
+harga_pasar,STANDAR,triangular,1500,3000,4500
+harga_pasar,TINGGI,shoulder_kanan,3500,5500,
+kelengkapan,KURANG,shoulder_kiri,0,40,
+kelengkapan,CUKUP,triangular,30,55,80
+kelengkapan,LENGKAP,shoulder_kanan,65,100,
+harga_jual,RENDAH,shoulder_kiri,0,2500,
+harga_jual,STANDAR,triangular,1500,2500,4000
+harga_jual,TINGGI,shoulder_kanan,3000,5000,
