@@ -46,7 +46,6 @@ UAS/
 │   └── shared/
 │       └── utils/      # Helper & GUI utilities
 ├── tests/              # Unit Test (Validasi Algoritma)
-├── GEMINI.md           # Project Context Document
 └── requirements.txt    # Daftar dependensi library
 ```
 
