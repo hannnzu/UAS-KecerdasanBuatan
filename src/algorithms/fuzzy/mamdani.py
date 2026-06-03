@@ -1,20 +1,24 @@
-"""
-Module: Fuzzy Mamdani Inference System
-Project: UAS Kecerdasan Buatan
-Reference: Penerapan Metode Fuzzy Mamdani dalam Menentukan Harga Jual Ponsel
-"""
-
 import numpy as np
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 import pandas as pd
 import os
+import sys
+import io
+
+# Force UTF-8 encoding on standard output/error to prevent UnicodeEncodeError in Windows terminals
+if sys.platform.startswith('win'):
+    try:
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
+    except AttributeError:
+        pass
 
 class FuzzyMamdaniPricing:
     def __init__(self, membership_csv, rules_csv):
         # Define Universes (Domains) based on Journal
         self.univ_kondisi = np.arange(0, 101, 1)         # 0-100 %
-        self.univ_pasar = np.arange(0, 5501, 1)         # 0-5500 (ribu)
+        self.univ_pasar = np.arange(0, 5001, 1)         # 0-5000 (ribu)
         self.univ_kelengkapan = np.arange(0, 101, 1)    # 0-100 %
         self.univ_jual = np.arange(0, 5001, 1)          # 0-5000 (ribu)
 

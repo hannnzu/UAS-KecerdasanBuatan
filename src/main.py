@@ -153,7 +153,7 @@ class ModernUASApp(QMainWindow):
         
         # Input 2: Harga Pasar (Dalam Jutaan agar user interface bagus, tapi konversi ke Ribuan di backend)
         self.sp_pasar = QDoubleSpinBox()
-        self.sp_pasar.setRange(0.0, 5.5)
+        self.sp_pasar.setRange(0.0, 5.0)
         self.sp_pasar.setSingleStep(0.1)
         self.sp_pasar.setValue(4.5)
         self.sp_pasar.setPrefix("Rp. ")
