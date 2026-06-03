@@ -2,7 +2,6 @@
 Module: Greedy Best First Search (GBFS) Implementation
 Project: UAS Kecerdasan Buatan
 Reference: Implementasi Penggunaan Algoritma Greedy Best First Search (Jurnal)
-Skill Archetype: karpathy-coder (Clean, functional, directly solves the problem)
 """
 
 import pandas as pd

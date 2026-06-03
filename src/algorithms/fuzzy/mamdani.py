@@ -2,7 +2,6 @@
 Module: Fuzzy Mamdani Inference System
 Project: UAS Kecerdasan Buatan
 Reference: Penerapan Metode Fuzzy Mamdani dalam Menentukan Harga Jual Ponsel
-Skill Archetype: statistical-analyst (Precise logic, validated against numerical data)
 """
 
 import numpy as np

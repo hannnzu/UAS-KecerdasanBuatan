@@ -2,7 +2,6 @@
 Application: Dashboard UAS Kecerdasan Buatan
 Logic Stack: Greedy Best First Search & Fuzzy Mamdani
 GUI Stack: PyQt6
-Created dynamically via Antigravity Coding Assistant
 """
 
 import sys

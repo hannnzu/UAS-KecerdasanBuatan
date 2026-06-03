@@ -4,16 +4,16 @@
 
 ## 📖 Deskripsi Proyek
 
-Proyek ini adalah implementasi dari dua jurnal ilmiah menggunakan ekosistem Python dan PyQt6. Bertujuan untuk mensimulasikan sistem kecerdasan buatan dari teori menjadi aplikasi desktop nyata.
+Proyek ini adalah implementasi dari dua jurnal ilmiah menggunakan ekosistem Python. Algoritma **Fuzzy Mamdani** diimplementasikan menggunakan GUI desktop **PyQt6**, sedangkan algoritma **Greedy Best First Search (GBFS)** dijalankan langsung secara manual melalui **Terminal/CLI** (terpisah dari GUI).
 
-### 1. Greedy Best First Search (GBFS)
+### 1. Greedy Best First Search (GBFS) - Terminal CLI
 **Jurnal:** *Implementasi Penggunaan Algoritma Greedy Best First Search untuk Menentukan Rute Terpendek dari Cilacap ke Yogyakarta*
 - **Karakteristik:** Pencarian rute pada peta (Graph) yang terdiri dari 83 node kecamatan/lokasi.
 - **Evaluasi Heuristik:** Memilih node selanjutnya secara eksklusif menggunakan `f(n) = h'(n)` tanpa mempertimbangkan *cost* masa lalu.
-- **Mekanisme:** Iterasi state dengan pengelolaan **OPEN List** dan **CLOSED List**.
+- **Mekanisme:** Iterasi state dengan pengelolaan **OPEN List** dan **CLOSED List** yang langsung tercetak di terminal CLI saat dijalankan.
 - **Validasi Target:** Menemukan rute berjarak total **345.8 km**.
 
-### 2. Logika Fuzzy (Metode Mamdani)
+### 2. Logika Fuzzy (Metode Mamdani) - PyQt6 GUI
 **Jurnal:** *Penerapan Metode Fuzzy Mamdani dalam Menentukan Harga Jual Ponsel Pintar Bekas (Studi Kasus: Kayyis Cellular Depok)*
 - **Variabel Input:** Kondisi fisik (%), Harga Pasar (Rupiah), Kelengkapan aksesoris (%).
 - **Variabel Output:** Harga Jual (Rupiah).
@@ -80,9 +80,14 @@ UAS/
    pytest tests/
    ```
 
-4. **Jalankan Aplikasi GUI**
+4. **Jalankan Aplikasi GUI (Kalkulator Fuzzy Mamdani)**
    ```bash
    python src/main.py
+   ```
+
+5. **Jalankan Algoritma Greedy (GBFS) di Terminal**
+   ```bash
+   python src/algorithms/greedy/gbfs.py
    ```
 
 ---
