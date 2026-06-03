@@ -8,6 +8,16 @@ Skill Archetype: karpathy-coder (Clean, functional, directly solves the problem)
 import pandas as pd
 import os
 import heapq
+import sys
+import io
+
+# Force UTF-8 encoding on standard output/error to prevent UnicodeEncodeError in Windows terminals
+if sys.platform.startswith('win'):
+    try:
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
+    except AttributeError:
+        pass
 
 class GBFSSolver:
     def __init__(self, heuristic_path, adjacency_path):
@@ -133,8 +143,6 @@ if __name__ == "__main__":
     
     h_path = os.path.join(data_dir, "node_heuristik.csv")
     adj_path = os.path.join(data_dir, "adjacency_list.csv")
-    
-    print(f"Mencari data di: {data_dir}...")
     
     if not os.path.exists(h_path) or not os.path.exists(adj_path):
         print("Error: File CSV tidak ditemukan! Pastikan berada di direktori root project.")

@@ -16,7 +16,7 @@ sys.path.append(str(BASE_DIR))
 import pandas as pd
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, 
-    QTabWidget, QLabel, QComboBox, QPushButton, QTextEdit, 
+    QLabel, QComboBox, QPushButton, QTextEdit, 
     QSpinBox, QFormLayout, QGroupBox, QFrame, QMessageBox, QScrollArea,
     QDoubleSpinBox
 )
@@ -25,19 +25,15 @@ from PyQt6.QtGui import QFont, QColor, QPalette
 
 # Import Logika Backend yang sudah kita buat
 try:
-    from src.algorithms.greedy.gbfs import GBFSSolver
     from src.algorithms.fuzzy.mamdani import FuzzyMamdaniPricing
 except ImportError:
     print("⚠️ Mencoba import fallback...")
     # Fallback jika dipanggil dari dalam folder src
     sys.path.append(str(Path(__file__).resolve().parent))
-    from algorithms.greedy.gbfs import GBFSSolver
     from algorithms.fuzzy.mamdani import FuzzyMamdaniPricing
 
 # Tentukan Path Data
 DATA_DIR = os.path.join(BASE_DIR, "data")
-GREEDY_H = os.path.join(DATA_DIR, "node_heuristik.csv")
-GREEDY_ADJ = os.path.join(DATA_DIR, "adjacency_list.csv")
 FUZZY_MF = os.path.join(DATA_DIR, "fuzzy_membership.csv")
 FUZZY_RULES = os.path.join(DATA_DIR, "fuzzy_rules.csv")
 
@@ -45,7 +41,7 @@ class ModernUASApp(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Dashboard Inteligensi Buatan - UAS Program")
-        self.resize(900, 650)
+        self.resize(800, 500)
         self.setStyleSheet(self._get_modern_style())
         
         # Data Inisialisasi
@@ -54,7 +50,7 @@ class ModernUASApp(QMainWindow):
         # Main Widget & Layout
         main_widget = QWidget()
         main_layout = QVBoxLayout(main_widget)
-        main_layout.setContentsMargins(10, 10, 10, 10)
+        main_layout.setContentsMargins(20, 20, 20, 20)
         self.setCentralWidget(main_widget)
         
         # Header Title
@@ -64,20 +60,14 @@ class ModernUASApp(QMainWindow):
         header.setStyleSheet("color: #2c3e50; margin-bottom: 5px; letter-spacing: 2px;")
         main_layout.addWidget(header)
         
-        subtitle = QLabel("Implementasi Jurnal Greedy & Fuzzy Mamdani")
+        subtitle = QLabel("Implementasi Jurnal Fuzzy Mamdani (Estimasi Harga Jual HP)")
         subtitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
         subtitle.setStyleSheet("color: #7f8c8d; font-size: 12px; margin-bottom: 15px;")
         main_layout.addWidget(subtitle)
 
-        # Tab Widget
-        self.tabs = QTabWidget()
-        self.tabs.setStyleSheet("QTabBar::tab { height: 40px; width: 300px; font-size: 14px; font-weight: bold; }")
-        
-        # Init Tabs
-        self.init_tab_greedy()
-        self.init_tab_fuzzy()
-        
-        main_layout.addWidget(self.tabs)
+        # Init Fuzzy UI
+        fuzzy_widget = self.init_fuzzy_ui()
+        main_layout.addWidget(fuzzy_widget)
 
     def _get_modern_style(self):
         return """
@@ -130,101 +120,27 @@ class ModernUASApp(QMainWindow):
         """Memuat data csv dan menyalakan backend logic"""
         try:
             # Cek ketersediaan file
-            for f in [GREEDY_H, GREEDY_ADJ, FUZZY_MF, FUZZY_RULES]:
+            for f in [FUZZY_MF, FUZZY_RULES]:
                 if not os.path.exists(f):
                     raise FileNotFoundError(f"File data tidak ditemukan: {f}")
-
-            # Load Greedy Backend
-            self.greedy_solver = GBFSSolver(GREEDY_H, GREEDY_ADJ)
             
             # Load Fuzzy Backend
             self.fuzzy_engine = FuzzyMamdaniPricing(FUZZY_MF, FUZZY_RULES)
-            print("✅ Seluruh mesin kecerdasan buatan berhasil dimuat.")
+            print("✅ Mesin logika Fuzzy Mamdani berhasil dimuat.")
             
         except Exception as e:
             QMessageBox.critical(self, "Error Kritis", f"Gagal memuat data algoritma:\n{str(e)}")
             sys.exit(1)
 
-    def init_tab_greedy(self):
-        tab = QWidget()
-        layout = QHBoxLayout(tab)
-        
-        # --- SISI KIRI: Input Control ---
-        left_panel = QWidget()
-        left_vbox = QVBoxLayout(left_panel)
-        
-        group_input = QGroupBox("Konfigurasi Navigasi")
-        form = QFormLayout(group_input)
-        form.setSpacing(15)
-        
-        self.cb_start = QComboBox()
-        self.cb_dest = QComboBox()
-        
-        # Isi combo box dengan Nama Lokasi yang diambil dari backend
-        # Mengurutkan berdasarkan key ID node
-        sorted_nodes = sorted(self.greedy_solver.node_info.items())
-        for node_id, info in sorted_nodes:
-            text = f"{node_id} - {info['nama']}"
-            self.cb_start.addItem(text, node_id)
-            self.cb_dest.addItem(text, node_id)
-            
-        # Set Default: Start 1 (Kesugihan), Goal 83 (Yogyakarta)
-        index_start = self.cb_start.findData(1)
-        index_dest = self.cb_dest.findData(83)
-        if index_start != -1: self.cb_start.setCurrentIndex(index_start)
-        if index_dest != -1: self.cb_dest.setCurrentIndex(index_dest)
-
-        form.addRow("📍 Lokasi Asal:", self.cb_start)
-        form.addRow("🏁 Lokasi Tujuan:", self.cb_dest)
-        
-        btn_find = QPushButton("Cari Rute Terpendek (GBFS)")
-        btn_find.setObjectName("btn_calculate")
-        btn_find.clicked.connect(self.run_greedy)
-        form.addRow("", btn_find)
-        
-        left_vbox.addWidget(group_input)
-        
-        # Info Info Metodologi
-        info_box = QGroupBox("Metodologi Jurnal")
-        info_txt = QLabel(
-            "Metode: Greedy Best First Search\n"
-            "Kriteria Seleksi: Nilai Heuristik terkecil.\n"
-            "Rumus: f(n) = h'(n)\n"
-            "Keterangan: Mencari rute terpendek Cilacap ke Yogyakarta."
-        )
-        info_txt.setWordWrap(True)
-        vbox_info = QVBoxLayout(info_box)
-        vbox_info.addWidget(info_txt)
-        left_vbox.addWidget(info_box)
-        left_vbox.addStretch()
-        
-        # --- SISI KANAN: Output Window ---
-        right_panel = QWidget()
-        right_vbox = QVBoxLayout(right_panel)
-        
-        lbl_out = QLabel("🔍 Log Perjalanan / Jalur Ditemukan:")
-        lbl_out.setFont(QFont("Arial", 10, QFont.Weight.Bold))
-        
-        self.txt_output_greedy = QTextEdit()
-        self.txt_output_greedy.setReadOnly(True)
-        self.txt_output_greedy.setPlaceholderText("Klik tombol Cari Rute untuk memulai kalkulasi...")
-        
-        right_vbox.addWidget(lbl_out)
-        right_vbox.addWidget(self.txt_output_greedy)
-        
-        # Add to layout splitter (40% control, 60% output)
-        layout.addWidget(left_panel, 40)
-        layout.addWidget(right_panel, 60)
-        
-        self.tabs.addTab(tab, "🗺️ RUTE GREEDY")
-
-    def init_tab_fuzzy(self):
-        tab = QWidget()
-        layout = QHBoxLayout(tab)
+    def init_fuzzy_ui(self):
+        container = QWidget()
+        layout = QHBoxLayout(container)
+        layout.setContentsMargins(0, 0, 0, 0)
         
         # --- SISI KIRI: Parameter HP ---
         left_panel = QWidget()
         left_vbox = QVBoxLayout(left_panel)
+        left_vbox.setContentsMargins(0, 0, 0, 0)
         
         group_params = QGroupBox("Spesifikasi Ponsel Pintar Bekas")
         form = QFormLayout(group_params)
@@ -297,41 +213,7 @@ class ModernUASApp(QMainWindow):
         layout.addWidget(left_panel, 45)
         layout.addWidget(right_panel, 55)
         
-        self.tabs.addTab(tab, "💰 KALKULATOR HARGA FUZZY")
-
-    # ================= ACTORS / CONTROLLERS =================
-    
-    def run_greedy(self):
-        start_id = self.cb_start.currentData()
-        dest_id = self.cb_dest.currentData()
-        
-        start_name = self.greedy_solver.node_info[start_id]['nama']
-        dest_name = self.greedy_solver.node_info[dest_id]['nama']
-        
-        self.txt_output_greedy.clear()
-        self.txt_output_greedy.append(f"=== MEMULAI PENCARIAN GREEDY ===")
-        self.txt_output_greedy.append(f"Start: {start_name}")
-        self.txt_output_greedy.append(f"Target: {dest_name}\n")
-        
-        # Capture terminal logic output (simulated here into txt area)
-        result = self.greedy_solver.solve(start_id, dest_id)
-        
-        if result:
-            path = result['path']
-            self.txt_output_greedy.append("-" * 40)
-            self.txt_output_greedy.append(f"✅ RUTE DITEMUKAN!")
-            self.txt_output_greedy.append(f"Dilewati {len(path)} Titik Perjalanan.\n")
-            
-            for idx, node in enumerate(path):
-                name = self.greedy_solver.node_info[node]['nama']
-                pref = "📍 [Mulai] " if idx == 0 else "🏁 [Tujuan]" if idx == len(path)-1 else f"   ➤ "
-                self.txt_output_greedy.append(f"{pref} Node {node}: {name}")
-            
-            # Formatting final string chain
-            self.txt_output_greedy.append("\nURUTAN NODE CHAIN:")
-            self.txt_output_greedy.append(" -> ".join(map(str, path)))
-        else:
-            self.txt_output_greedy.append("\n❌ MAAF, JALUR TIDAK DITEMUKAN DI DATA GRAF.")
+        return container
 
     def run_fuzzy(self):
         try:
